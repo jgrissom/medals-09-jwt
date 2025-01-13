@@ -11,7 +11,7 @@ import {
 import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 import "@radix-ui/themes/styles.css";
 import "./App.css";
-// import NewCountry from "./components/NewCountry";
+import NewCountry from "./components/NewCountry";
 
 function App() {
   const [appearance, setAppearance] = useState("dark");
@@ -84,6 +84,7 @@ function App() {
             <Heading size="6">{getAllMedalsTotal()}</Heading>
           </Badge>
         </Heading>
+        <NewCountry onAdd={handleAdd} />
       </Flex>
       <Container className="bg"></Container>
     </Theme>
