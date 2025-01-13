@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 // import Country from "./components/Country";
-import { Theme, Flex, Heading, Badge } from "@radix-ui/themes";
+import { Theme, Flex, Heading, Badge, Button } from "@radix-ui/themes";
+import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 import "@radix-ui/themes/styles.css";
 import "./App.css";
 // import NewCountry from "./components/NewCountry";
 
 function App() {
+  const [appearance, setAppearance] = useState("dark");
   const [countries, setCountries] = useState([
     { id: 1, name: "United States", gold: 2, silver: 2, bronze: 3 },
     { id: 2, name: "China", gold: 3, silver: 1, bronze: 0 },
@@ -17,6 +19,9 @@ function App() {
     { id: 3, name: "bronze" },
   ]);
 
+  function toggleAppearance() {
+    setAppearance(appearance === "light" ? "dark" : "light");
+  }
   function handleAdd(name) {
     console.log(`add country: ${name}`);
     setCountries(
@@ -57,7 +62,14 @@ function App() {
   }
 
   return (
-    <Theme appearance="dark">
+    <Theme appearance={appearance}>
+      <Button
+        onClick={toggleAppearance}
+        style={{ position: "fixed", bottom: 20, right: 20, zIndex: 100 }}
+        variant="ghost"
+      >
+        {appearance === "dark" ? <MoonIcon /> : <SunIcon />}
+      </Button>
       <Flex p="2" pl="8" className="fixedHeader" justify="between">
         <Heading size="6">
           Olympic Medals
