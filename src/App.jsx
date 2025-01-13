@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
-import Country from "./components/Country";
+// import Country from "./components/Country";
+import { Theme, Flex, Heading, Badge } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 import "./App.css";
-import NewCountry from "./components/NewCountry";
+// import NewCountry from "./components/NewCountry";
 
 function App() {
   const [countries, setCountries] = useState([
@@ -55,22 +57,16 @@ function App() {
   }
 
   return (
-    <>
-      <h1 id="page-header">Olympic Medals {getAllMedalsTotal()}</h1>
-      <div className="countries">
-        {countries.map((country) => (
-          <Country
-            onDelete={handleDelete}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-            key={country.id}
-            country={country}
-            medals={medals.current}
-          />
-        ))}
-      </div>
-      <NewCountry onAdd={handleAdd} />
-    </>
+    <Theme appearance="dark">
+      <Flex p="2" pl="8" className="fixedHeader" justify="between">
+        <Heading size="6">
+          Olympic Medals
+          <Badge variant="outline" ml="2">
+            <Heading size="6">{getAllMedalsTotal()}</Heading>
+          </Badge>
+        </Heading>
+      </Flex>
+    </Theme>
   );
 }
 
