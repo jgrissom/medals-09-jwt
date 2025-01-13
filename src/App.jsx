@@ -32,9 +32,9 @@ function App() {
     { id: 13, name: "Scotland", gold: 3, silver: 0, bronze: 2 },
   ]);
   const medals = useRef([
-    { id: 1, name: "gold" },
-    { id: 2, name: "silver" },
-    { id: 3, name: "bronze" },
+    { id: 1, name: "gold", color: "#FFD700" },
+    { id: 2, name: "silver", color: "#C0C0C0" },
+    { id: 3, name: "bronze", color: "#CD7F32" },
   ]);
 
   function toggleAppearance() {

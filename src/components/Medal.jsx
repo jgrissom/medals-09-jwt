@@ -1,5 +1,6 @@
 import { Box, Table, Flex, Badge, Button } from "@radix-ui/themes";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import MedalSvg from "./MedalSvg";
 import { tc } from "../Utils.js";
 
 function Medal(props) {
@@ -7,6 +8,7 @@ function Medal(props) {
     <Table.Row>
       <Table.RowHeaderCell>
         <Flex align="center">
+          <MedalSvg color={props.medal.color} />
           <Box pl="2">{tc(props.medal.name)} Medals</Box>
         </Flex>
       </Table.RowHeaderCell>
