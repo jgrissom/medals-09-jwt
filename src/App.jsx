@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-// import Country from "./components/Country";
+import Country from "./components/Country";
 import {
   Theme,
   Button,
@@ -7,6 +7,7 @@ import {
   Heading,
   Badge,
   Container,
+  Grid,
 } from "@radix-ui/themes";
 import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 import "@radix-ui/themes/styles.css";
@@ -87,6 +88,20 @@ function App() {
         <NewCountry onAdd={handleAdd} />
       </Flex>
       <Container className="bg"></Container>
+      <Grid pt="2" gap="2" className="grid-container">
+        {countries
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((country) => (
+            <Country
+              key={country.id}
+              country={country}
+              medals={medals.current}
+              onDelete={handleDelete}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+            />
+          ))}
+      </Grid>
     </Theme>
   );
 }

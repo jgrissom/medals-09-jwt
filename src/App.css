@@ -7,6 +7,10 @@
   z-index: -1;
   background: url("./assets/rings.svg") no-repeat bottom 18px center fixed;
 }
+.grid-container {
+  grid-template-columns: repeat(auto-fit, 300px);
+  justify-content: center;
+}
 .fixedHeader {
   border-bottom: solid rgba(120, 120, 120, 0.5) 0.5px;
   position: sticky;
