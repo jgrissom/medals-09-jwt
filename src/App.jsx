@@ -1,6 +1,13 @@
 import { useState, useRef } from "react";
 // import Country from "./components/Country";
-import { Theme, Flex, Heading, Badge, Button } from "@radix-ui/themes";
+import {
+  Theme,
+  Button,
+  Flex,
+  Heading,
+  Badge,
+  Container,
+} from "@radix-ui/themes";
 import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
 import "@radix-ui/themes/styles.css";
 import "./App.css";
@@ -78,6 +85,7 @@ function App() {
           </Badge>
         </Heading>
       </Flex>
+      <Container className="bg"></Container>
     </Theme>
   );
 }
