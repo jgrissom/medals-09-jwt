@@ -105,6 +105,46 @@ function App() {
     mutableCountries[idx][medalName].page_value += 1 * factor;
     setCountries(mutableCountries);
   }
+  async function handleSave(countryId) {
+    const originalCountries = countries;
+
+    const idx = countries.findIndex((c) => c.id === countryId);
+    const mutableCountries = [...countries];
+    const country = mutableCountries[idx];
+    let jsonPatch = [];
+    medals.current.forEach((medal) => {
+      if (country[medal.name].page_value !== country[medal.name].saved_value) {
+        jsonPatch.push({
+          op: "replace",
+          path: medal.name,
+          value: country[medal.name].page_value,
+        });
+        country[medal.name].saved_value = country[medal.name].page_value;
+      }
+    });
+    console.log(
+      `json patch for id: ${countryId}: ${JSON.stringify(jsonPatch)}`
+    );
+    // update state
+    setCountries(mutableCountries);
+
+    try {
+      await axios.patch(`${apiEndpoint}/${countryId}`, jsonPatch);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        // country already deleted
+        console.log(
+          "The record does not exist - it may have already been deleted"
+        );
+      } else {
+        alert("An error occurred while updating");
+        setCountries(originalCountries);
+      }
+    }
+  }
+  function handleReset(countryId) {
+    console.log(`Reset: ${countryId}`);
+  }
   function getAllMedalsTotal() {
     let sum = 0;
     // use medal count displayed in the web page for medal count totals
@@ -142,6 +182,8 @@ function App() {
               country={country}
               medals={medals.current}
               onDelete={handleDelete}
+              onSave={handleSave}
+              onReset={handleReset}
               onIncrement={handleIncrement}
               onDecrement={handleDecrement}
             />

@@ -47,10 +47,20 @@ function Country(props) {
                 >
                   {renderSaveButton() && (
                     <>
-                      <Button color="gray" variant="ghost" size="1">
+                      <Button
+                        color="gray"
+                        variant="ghost"
+                        size="1"
+                        onClick={() => props.onReset(props.country.id)}
+                      >
                         <ResetIcon />
                       </Button>
-                      <Button color="gray" variant="ghost" size="1">
+                      <Button
+                        color="gray"
+                        variant="ghost"
+                        size="1"
+                        onClick={() => props.onSave(props.country.id)}
+                      >
                         <CheckIcon />
                       </Button>
                     </>
