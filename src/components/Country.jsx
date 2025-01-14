@@ -11,6 +11,19 @@ function Country(props) {
     });
     return sum;
   }
+  // determines if there are any difference between page_value and saved_value for any medals
+  function renderSaveButton() {
+    let unsaved = false;
+    props.medals.forEach((medal) => {
+      if (
+        props.country[medal.name].page_value !==
+        props.country[medal.name].saved_value
+      ) {
+        unsaved = true;
+      }
+    });
+    return unsaved;
+  }
 
   return (
     <Box width="300px">
@@ -25,9 +38,20 @@ function Country(props) {
                     {getMedalsTotal(props.country, props.medals)}
                   </Badge>
                 </span>
-                <Button color="red" variant="ghost" size="1">
-                  <TrashIcon onClick={() => props.onDelete(props.country.id)} />
-                </Button>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "1.2rem",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {renderSaveButton() && <div>changed</div>}
+                  <Button color="red" variant="ghost" size="1">
+                    <TrashIcon
+                      onClick={() => props.onDelete(props.country.id)}
+                    />
+                  </Button>
+                </div>
               </Flex>
             </Table.ColumnHeaderCell>
           </Table.Row>
