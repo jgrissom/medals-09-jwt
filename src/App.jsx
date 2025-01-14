@@ -50,9 +50,22 @@ function App() {
       }
     }
   }
-  function handleDelete(id) {
-    // console.log(`delete country: ${id}`);
-    // setCountries(countries.filter((c) => c.id !== id));
+  async function handleDelete(countryId) {
+    const originalCountries = countries;
+    setCountries(countries.filter((c) => c.id !== countryId));
+    try {
+      await axios.delete(`${apiEndpoint}/${countryId}`);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        // country already deleted
+        console.log(
+          "The record does not exist - it may have already been deleted"
+        );
+      } else {
+        alert("An error occurred while deleting");
+        setCountries(originalCountries);
+      }
+    }
   }
   function handleIncrement(countryId, medalName) {
     const idx = countries.findIndex((c) => c.id === countryId);
