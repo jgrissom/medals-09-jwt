@@ -1,6 +1,6 @@
 import Medal from "./Medal";
 import { Box, Table, Flex, Badge, Button } from "@radix-ui/themes";
-import { TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon, CheckIcon, ResetIcon } from "@radix-ui/react-icons";
 
 function Country(props) {
   function getMedalsTotal() {
@@ -45,7 +45,16 @@ function Country(props) {
                     justifyContent: "space-between",
                   }}
                 >
-                  {renderSaveButton() && <div>changed</div>}
+                  {renderSaveButton() && (
+                    <>
+                      <Button color="gray" variant="ghost" size="1">
+                        <ResetIcon />
+                      </Button>
+                      <Button color="gray" variant="ghost" size="1">
+                        <CheckIcon />
+                      </Button>
+                    </>
+                  )}
                   <Button color="red" variant="ghost" size="1">
                     <TrashIcon
                       onClick={() => props.onDelete(props.country.id)}
