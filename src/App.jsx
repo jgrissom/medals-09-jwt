@@ -19,36 +19,51 @@ function App() {
   const [appearance, setAppearance] = useState("dark");
   const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
   const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    // initial data loaded here
-    async function fetchCountries() {
-      const { data: fetchedCountries } = await axios.get(apiEndpoint);
-      setCountries(fetchedCountries);
-    }
-    fetchCountries();
-  }, []);
-
   const medals = useRef([
     { id: 1, name: "gold", color: "#FFD700" },
     { id: 2, name: "silver", color: "#C0C0C0" },
     { id: 3, name: "bronze", color: "#CD7F32" },
   ]);
 
+  useEffect(() => {
+    // initial data loaded here
+    async function fetchCountries() {
+      const { data: fetchedCountries } = await axios.get(apiEndpoint);
+      // we need to save the original medal count values in state
+      let newCountries = [];
+      fetchedCountries.forEach((country) => {
+        let newCountry = {
+          id: country.id,
+          name: country.name,
+        };
+        medals.current.forEach((medal) => {
+          const count = country[medal.name];
+          // page_value is what is displayed on the web page
+          // saved_value is what is saved to the database
+          newCountry[medal.name] = { page_value: count, saved_value: count };
+        });
+        newCountries.push(newCountry);
+      });
+      setCountries(newCountries);
+    }
+    fetchCountries();
+  }, []);
+
   function toggleAppearance() {
     setAppearance(appearance === "light" ? "dark" : "light");
   }
   async function handleAdd(name) {
-    try {
-      const { data: post } = await axios.post(apiEndpoint, { name: name });
-      setCountries(countries.concat(post));
-    } catch (ex) {
-      if (ex.response) {
-        console.log(ex.response);
-      } else {
-        console.log("Request failed");
-      }
-    }
+    // try {
+    //   const { data: post } = await axios.post(apiEndpoint, { name: name });
+    //   setCountries(countries.concat(post));
+    // } catch (ex) {
+    //   if (ex.response) {
+    //     console.log(ex.response);
+    //   } else {
+    //     console.log("Request failed");
+    //   }
+    // }
+    console.log("ADD");
   }
   async function handleDelete(countryId) {
     const originalCountries = countries;
@@ -68,22 +83,25 @@ function App() {
     }
   }
   function handleIncrement(countryId, medalName) {
-    const idx = countries.findIndex((c) => c.id === countryId);
-    const mutableCountries = [...countries];
-    mutableCountries[idx][medalName] += 1;
-    setCountries(mutableCountries);
+    // const idx = countries.findIndex((c) => c.id === countryId);
+    // const mutableCountries = [...countries];
+    // mutableCountries[idx][medalName] += 1;
+    // setCountries(mutableCountries);
+    console.log("+");
   }
   function handleDecrement(countryId, medalName) {
-    const idx = countries.findIndex((c) => c.id === countryId);
-    const mutableCountries = [...countries];
-    mutableCountries[idx][medalName] -= 1;
-    setCountries(mutableCountries);
+    // const idx = countries.findIndex((c) => c.id === countryId);
+    // const mutableCountries = [...countries];
+    // mutableCountries[idx][medalName] -= 1;
+    // setCountries(mutableCountries);
+    console.log("-");
   }
   function getAllMedalsTotal() {
     let sum = 0;
-    medals.current.forEach((medal) => {
-      sum += countries.reduce((a, b) => a + b[medal.name], 0);
-    });
+    // use medal count displayed in the web page for medal count totals
+    // medals.current.forEach((medal) => {
+    //   sum += countries.reduce((a, b) => a + b[medal.name], 0);
+    // });
     return sum;
   }
 

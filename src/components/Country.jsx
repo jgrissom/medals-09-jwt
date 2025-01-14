@@ -6,7 +6,8 @@ function Country(props) {
   function getMedalsTotal() {
     let sum = 0;
     props.medals.forEach((medal) => {
-      sum += props.country[medal.name];
+      // use medal count displayed in the web page for medal count totals
+      sum += props.country[medal.name].page_value;
     });
     return sum;
   }

@@ -16,16 +16,18 @@ function Medal(props) {
         <Flex align="center" justify="between">
           <Button
             variant="ghost"
-            disabled={props.country[props.medal.name] === 0}
+            disabled={props.country[props.medal.name].page_value === 0}
           >
             <MinusIcon
               onClick={() =>
-                props.country[props.medal.name] > 0 &&
+                props.country[props.medal.name].page_value > 0 &&
                 props.onDecrement(props.country.id, props.medal.name)
               }
             />
           </Button>
-          <Badge variant="outline">{props.country[props.medal.name]}</Badge>
+          <Badge variant="outline">
+            {props.country[props.medal.name].page_value}
+          </Badge>
           <Button variant="ghost">
             <PlusIcon
               onClick={() =>
