@@ -53,16 +53,27 @@ function App() {
     setAppearance(appearance === "light" ? "dark" : "light");
   }
   async function handleAdd(name) {
-    // try {
-    //   const { data: post } = await axios.post(apiEndpoint, { name: name });
-    //   setCountries(countries.concat(post));
-    // } catch (ex) {
-    //   if (ex.response) {
-    //     console.log(ex.response);
-    //   } else {
-    //     console.log("Request failed");
-    //   }
-    // }
+    try {
+      const { data: post } = await axios.post(apiEndpoint, { name: name });
+      let newCountry = {
+        id: post.id,
+        name: post.name,
+      };
+      console.log(newCountry);
+      medals.current.forEach((medal) => {
+        const count = post[medal.name];
+        // when a new country is added, we need to store page and saved values for
+        // medal counts in state
+        newCountry[medal.name] = { page_value: count, saved_value: count };
+      });
+      setCountries(countries.concat(newCountry));
+    } catch (ex) {
+      if (ex.response) {
+        console.log(ex.response);
+      } else {
+        console.log("Request failed");
+      }
+    }
     console.log("ADD");
   }
   async function handleDelete(countryId) {
