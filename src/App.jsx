@@ -60,6 +60,18 @@ function App() {
     setConnection(newConnection);
   }, []);
 
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          console.log("Connected!");
+        })
+        .catch((e) => console.log("Connection failed: ", e));
+    }
+    // useEffect is dependent on changes to connection
+  }, [connection]);
+
   function toggleAppearance() {
     setAppearance(appearance === "light" ? "dark" : "light");
   }
