@@ -134,7 +134,12 @@ function App() {
     try {
       await axios.post(apiEndpoint, { name: name });
     } catch (ex) {
-      if (ex.response) {
+      if (
+        ex.response &&
+        (ex.response.status === 401 || ex.response.status === 403)
+      ) {
+        alert("You are not authorized to complete this request");
+      } else if (ex.response) {
         console.log(ex.response);
       } else {
         console.log("Request failed");
