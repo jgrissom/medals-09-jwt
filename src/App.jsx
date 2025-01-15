@@ -172,7 +172,11 @@ function App() {
     const originalCountries = countries;
     setCountries(countries.filter((c) => c.id !== countryId));
     try {
-      await axios.delete(`${apiEndpoint}/${countryId}`);
+      await axios.delete(`${apiEndpoint}/${countryId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
         // country already deleted
