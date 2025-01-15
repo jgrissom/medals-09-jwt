@@ -18,7 +18,8 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function App() {
   const [appearance, setAppearance] = useState("dark");
-  const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
+  // const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
+  const apiEndpoint = "https://medalsapi.azurewebsites.net/jwtapi/country";
   const hubEndpoint = "https://medalsapi.azurewebsites.net/medalsHub";
   const [connection, setConnection] = useState(null);
   const [countries, setCountries] = useState([]);
