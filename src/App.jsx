@@ -330,7 +330,7 @@ function App() {
             <Heading size="6">{getAllMedalsTotal()}</Heading>
           </Badge>
         </Heading>
-        <NewCountry onAdd={handleAdd} />
+        {user.canPost && <NewCountry onAdd={handleAdd} />}
       </Flex>
       <Container className="bg"></Container>
       <Grid pt="2" gap="2" className="grid-container">
