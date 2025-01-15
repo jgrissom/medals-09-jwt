@@ -11,6 +11,8 @@ import {
 
 function Login(props) {
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <>
@@ -35,7 +37,16 @@ function Login(props) {
               <Text as="div" size="2" mb="1" weight="bold">
                 User Name
               </Text>
-              <TextField.Root placeholder="Enter your user name" />
+              <TextField.Root
+                placeholder="Enter your user name"
+                autoCapitalize="off"
+                autoComplete="off"
+                autoCorrect="off"
+                autoFocus
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </label>
             <label>
               <Text as="div" size="2" mb="1" weight="bold">
@@ -44,6 +55,12 @@ function Login(props) {
               <TextField.Root
                 type="Password"
                 placeholder="Enter your password"
+                autoCapitalize="off"
+                autoComplete="off"
+                autoCorrect="off"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </label>
           </Flex>
