@@ -14,6 +14,10 @@ function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  function handleLogin() {
+    props.onLogin(username, password);
+  }
+
   return (
     <>
       <Tooltip content="Login">
@@ -72,7 +76,14 @@ function Login(props) {
               </Button>
             </Dialog.Close>
             <Dialog.Close>
-              <Button>Login</Button>
+              <Button
+                onClick={handleLogin}
+                disabled={
+                  username.trim().length === 0 || password.trim().length === 0
+                }
+              >
+                Login
+              </Button>
             </Dialog.Close>
           </Flex>
         </Dialog.Content>
