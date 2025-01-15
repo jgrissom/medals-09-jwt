@@ -257,6 +257,7 @@ function App() {
         password: password,
       });
       const encoded = resp.data.token;
+      localStorage.setItem("token", encoded);
       setUser(getUser(encoded));
     } catch (ex) {
       if (
@@ -272,6 +273,7 @@ function App() {
     }
   }
   function handleLogout() {
+    localStorage.removeItem("token");
     setUser({
       name: null,
       authenticated: false,
