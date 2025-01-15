@@ -27,6 +27,10 @@ function App() {
     { id: 2, name: "silver", color: "#C0C0C0" },
     { id: 3, name: "bronze", color: "#CD7F32" },
   ]);
+  const latestCountries = useRef(null);
+  // latestCountries is a ref variable to countries (state)
+  // this is needed to access state variable in useEffect w/o dependency
+  latestCountries.current = countries;
 
   useEffect(() => {
     // initial data loaded here
@@ -69,6 +73,23 @@ function App() {
 
           connection.on("ReceiveAddMessage", (country) => {
             console.log(`Add: ${country.name}`);
+
+            let newCountry = {
+              id: country.id,
+              name: country.name,
+            };
+            medals.current.forEach((medal) => {
+              const count = country[medal.name];
+              newCountry[medal.name] = {
+                page_value: count,
+                saved_value: count,
+              };
+            });
+            // we need to use a reference to countries array here
+            // since this useEffect has no dependeny on countries array - it is not in scope
+            let mutableCountries = [...latestCountries.current];
+            mutableCountries = mutableCountries.concat(newCountry);
+            setCountries(mutableCountries);
           });
         })
         .catch((e) => console.log("Connection failed: ", e));
@@ -81,19 +102,7 @@ function App() {
   }
   async function handleAdd(name) {
     try {
-      const { data: post } = await axios.post(apiEndpoint, { name: name });
-      let newCountry = {
-        id: post.id,
-        name: post.name,
-      };
-      console.log(newCountry);
-      medals.current.forEach((medal) => {
-        const count = post[medal.name];
-        // when a new country is added, we need to store page and saved values for
-        // medal counts in state
-        newCountry[medal.name] = { page_value: count, saved_value: count };
-      });
-      setCountries(countries.concat(newCountry));
+      await axios.post(apiEndpoint, { name: name });
     } catch (ex) {
       if (ex.response) {
         console.log(ex.response);
