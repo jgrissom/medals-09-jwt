@@ -27,7 +27,13 @@ function App() {
   const userEndpoint = "https://jwtswagger.azurewebsites.net/api/user/login";
   const [connection, setConnection] = useState(null);
   const [countries, setCountries] = useState([]);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState({
+    name: null,
+    authenticated: false,
+    canPost: false,
+    canPatch: false,
+    canDelete: false,
+  });
   const medals = useRef([
     { id: 1, name: "gold", color: "#FFD700" },
     { id: 2, name: "silver", color: "#C0C0C0" },
@@ -251,9 +257,7 @@ function App() {
         password: password,
       });
       const encoded = resp.data.token;
-      console.log(encoded);
-      console.log(getUser(encoded));
-      setAuthenticated(true);
+      setUser(getUser(encoded));
     } catch (ex) {
       if (
         ex.response &&
@@ -268,7 +272,13 @@ function App() {
     }
   }
   function handleLogout() {
-    setAuthenticated(false);
+    setUser({
+      name: null,
+      authenticated: false,
+      canPost: false,
+      canPatch: false,
+      canDelete: false,
+    });
   }
   function getAllMedalsTotal() {
     let sum = 0;
@@ -288,7 +298,7 @@ function App() {
       >
         {appearance === "dark" ? <MoonIcon /> : <SunIcon />}
       </Button>
-      {authenticated ? (
+      {user.authenticated ? (
         <Logout onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />

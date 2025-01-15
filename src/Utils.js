@@ -11,6 +11,7 @@ export function getUser(encoded) {
   const decoded = jwtDecode(encoded);
   return {
     name: decoded["username"],
+    authenticated: true,
     canPost: decoded["roles"].indexOf("medals-post") === -1 ? false : true,
     canPatch: decoded["roles"].indexOf("medals-patch") === -1 ? false : true,
     canDelete: decoded["roles"].indexOf("medals-delete") === -1 ? false : true,
