@@ -341,6 +341,7 @@ function App() {
               key={country.id}
               country={country}
               medals={medals.current}
+              canDelete={user.canDelete}
               onDelete={handleDelete}
               onSave={handleSave}
               onReset={handleReset}

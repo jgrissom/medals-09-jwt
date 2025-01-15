@@ -65,11 +65,13 @@ function Country(props) {
                       </Button>
                     </>
                   )}
-                  <Button color="red" variant="ghost" size="1">
-                    <TrashIcon
-                      onClick={() => props.onDelete(props.country.id)}
-                    />
-                  </Button>
+                  {props.canDelete && (
+                    <Button color="red" variant="ghost" size="1">
+                      <TrashIcon
+                        onClick={() => props.onDelete(props.country.id)}
+                      />
+                    </Button>
+                  )}
                 </div>
               </Flex>
             </Table.ColumnHeaderCell>
