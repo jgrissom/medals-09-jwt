@@ -66,6 +66,10 @@ function App() {
         .start()
         .then(() => {
           console.log("Connected!");
+
+          connection.on("ReceiveAddMessage", (country) => {
+            console.log(`Add: ${country.name}`);
+          });
         })
         .catch((e) => console.log("Connection failed: ", e));
     }
