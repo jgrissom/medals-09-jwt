@@ -202,6 +202,13 @@ function App() {
         console.log(
           "The record does not exist - it may have already been deleted"
         );
+      } else if (
+        ex.response &&
+        (ex.response.status === 401 || ex.response.status === 403)
+      ) {
+        alert("You are not authorized to complete this request");
+        // to simplify, I am reloading the page to restore "saved" values
+        window.location.reload(false);
       } else {
         alert("An error occurred while updating");
         setCountries(originalCountries);
