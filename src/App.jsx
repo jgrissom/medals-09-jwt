@@ -91,6 +91,10 @@ function App() {
             mutableCountries = mutableCountries.concat(newCountry);
             setCountries(mutableCountries);
           });
+
+          connection.on("ReceiveDeleteMessage", (id) => {
+            console.log(`Delete id: ${id}`);
+          });
         })
         .catch((e) => console.log("Connection failed: ", e));
     }
