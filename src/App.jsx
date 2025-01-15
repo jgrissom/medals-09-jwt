@@ -14,10 +14,13 @@ import "@radix-ui/themes/styles.css";
 import "./App.css";
 import NewCountry from "./components/NewCountry";
 import axios from "axios";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function App() {
   const [appearance, setAppearance] = useState("dark");
   const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
+  const hubEndpoint = "https://medalsapi.azurewebsites.net/medalsHub";
+  const [connection, setConnection] = useState(null);
   const [countries, setCountries] = useState([]);
   const medals = useRef([
     { id: 1, name: "gold", color: "#FFD700" },
@@ -47,6 +50,14 @@ function App() {
       setCountries(newCountries);
     }
     fetchCountries();
+
+    // signalR
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(hubEndpoint)
+      .withAutomaticReconnect()
+      .build();
+
+    setConnection(newConnection);
   }, []);
 
   function toggleAppearance() {
