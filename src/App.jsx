@@ -22,6 +22,7 @@ function App() {
   // const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
   const apiEndpoint = "https://medalsapi.azurewebsites.net/jwtapi/country";
   const hubEndpoint = "https://medalsapi.azurewebsites.net/medalsHub";
+  const userEndpoint = "https://jwtswagger.azurewebsites.net/api/user/login";
   const [connection, setConnection] = useState(null);
   const [countries, setCountries] = useState([]);
   const medals = useRef([
@@ -240,8 +241,26 @@ function App() {
     });
     setCountries(mutableCountries);
   }
-  function handleLogin(username, password) {
-    console.log(`username: ${username}, password: ${password}`);
+  async function handleLogin(username, password) {
+    try {
+      const resp = await axios.post(userEndpoint, {
+        username: username,
+        password: password,
+      });
+      const encodedJwt = resp.data.token;
+      console.log(encodedJwt);
+    } catch (ex) {
+      if (
+        ex.response &&
+        (ex.response.status === 401 || ex.response.status === 400)
+      ) {
+        alert("Login failed");
+      } else if (ex.response) {
+        console.log(ex.response);
+      } else {
+        console.log("Request failed");
+      }
+    }
   }
   function getAllMedalsTotal() {
     let sum = 0;
