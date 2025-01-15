@@ -16,6 +16,7 @@ import "@radix-ui/themes/styles.css";
 import "./App.css";
 import NewCountry from "./components/NewCountry";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function App() {
@@ -249,8 +250,10 @@ function App() {
         username: username,
         password: password,
       });
-      const encodedJwt = resp.data.token;
-      console.log(encodedJwt);
+      const encoded = resp.data.token;
+      console.log(encoded);
+      const decoded = jwtDecode(encoded);
+      console.log(decoded);
       setAuthenticated(true);
     } catch (ex) {
       if (
