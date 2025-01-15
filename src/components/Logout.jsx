@@ -5,6 +5,7 @@ function Logout(props) {
   return (
     <Tooltip content="Logout">
       <Button
+        onClick={props.onLogout}
         style={{ position: "fixed", bottom: 20, left: 20, zIndex: 100 }}
         variant="ghost"
       >

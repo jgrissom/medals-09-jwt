@@ -265,6 +265,9 @@ function App() {
       }
     }
   }
+  function handleLogout() {
+    setAuthenticated(false);
+  }
   function getAllMedalsTotal() {
     let sum = 0;
     // use medal count displayed in the web page for medal count totals
@@ -283,7 +286,11 @@ function App() {
       >
         {appearance === "dark" ? <MoonIcon /> : <SunIcon />}
       </Button>
-      {authenticated ? <Logout /> : <Login onLogin={handleLogin} />}
+      {authenticated ? (
+        <Logout onLogout={handleLogout} />
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
       <Flex p="2" pl="8" className="fixedHeader" justify="between">
         <Heading size="6">
           Olympic Medals
