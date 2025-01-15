@@ -22,29 +22,37 @@ function Medal(props) {
         </Flex>
       </Table.RowHeaderCell>
       <Table.Cell align="right" width="108px">
-        <Flex align="center" justify="between">
-          <Button
-            variant="ghost"
-            disabled={props.country[props.medal.name].page_value === 0}
-          >
-            <MinusIcon
-              onClick={() =>
-                props.country[props.medal.name].page_value > 0 &&
-                props.onDecrement(props.country.id, props.medal.name)
-              }
-            />
-          </Button>
-          <Badge variant="outline">
-            {props.country[props.medal.name].page_value}
-          </Badge>
-          <Button variant="ghost">
-            <PlusIcon
-              onClick={() =>
-                props.onIncrement(props.country.id, props.medal.name)
-              }
-            />
-          </Button>
-        </Flex>
+        {props.canPatch ? (
+          <Flex align="center" justify="between">
+            <Button
+              variant="ghost"
+              disabled={props.country[props.medal.name].page_value === 0}
+            >
+              <MinusIcon
+                onClick={() =>
+                  props.country[props.medal.name].page_value > 0 &&
+                  props.onDecrement(props.country.id, props.medal.name)
+                }
+              />
+            </Button>
+            <Badge variant="outline">
+              {props.country[props.medal.name].page_value}
+            </Badge>
+            <Button variant="ghost">
+              <PlusIcon
+                onClick={() =>
+                  props.onIncrement(props.country.id, props.medal.name)
+                }
+              />
+            </Button>
+          </Flex>
+        ) : (
+          <Flex align="center" justify="center">
+            <Badge variant="outline">
+              {props.country[props.medal.name].page_value}
+            </Badge>
+          </Flex>
+        )}
       </Table.Cell>
     </Table.Row>
   );
