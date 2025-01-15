@@ -14,8 +14,16 @@ function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  function handleModalKeyPress(e) {
+    (e.keyCode ? e.keyCode : e.which) === 13 &&
+      username.length > 0 &&
+      password.length > 0 &&
+      handleLogin();
+  }
+
   function handleLogin() {
     props.onLogin(username, password);
+    setOpen(false);
   }
 
   return (
@@ -30,7 +38,7 @@ function Login(props) {
         </Button>
       </Tooltip>
       <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Content maxWidth="450px">
+        <Dialog.Content maxWidth="450px" onKeyUp={handleModalKeyPress}>
           <Dialog.Title>Log In</Dialog.Title>
           <Dialog.Description size="2" mb="4">
             Log in to your account
