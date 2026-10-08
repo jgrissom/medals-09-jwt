@@ -78,21 +78,25 @@ function Login(props) {
           </Flex>
 
           <Flex gap="3" mt="4" justify="end">
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
-              <Button
-                onClick={handleLogin}
-                disabled={
-                  username.trim().length === 0 || password.trim().length === 0
-                }
-              >
-                Login
-              </Button>
-            </Dialog.Close>
+            <Tooltip content="Cancel login">
+              <Dialog.Close>
+                <Button variant="soft" color="gray">
+                  Cancel
+                </Button>
+              </Dialog.Close>
+            </Tooltip>
+            <Tooltip content="Submit login">
+              <Dialog.Close>
+                <Button
+                  onClick={handleLogin}
+                  disabled={
+                    username.trim().length === 0 || password.trim().length === 0
+                  }
+                >
+                  Login
+                </Button>
+              </Dialog.Close>
+            </Tooltip>
           </Flex>
         </Dialog.Content>
       </Dialog.Root>
