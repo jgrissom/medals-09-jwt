@@ -10,8 +10,16 @@ import {
   Badge,
   Container,
   Grid,
+  Tooltip,
+  Callout,
+  IconButton,
 } from "@radix-ui/themes";
-import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
+import {
+  SunIcon,
+  MoonIcon,
+  Cross2Icon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
 import "@radix-ui/themes/styles.css";
 import "./App.css";
 import NewCountry from "./components/NewCountry";
@@ -21,6 +29,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function App() {
   const [appearance, setAppearance] = useState("dark");
+  const [notification, setNotification] = useState(null);
   // const apiEndpoint = "https://medalsapi.azurewebsites.net/api/country";
   const apiEndpoint = "https://medalsapi.azurewebsites.net/jwtapi/country";
   const hubEndpoint = "https://medalsapi.azurewebsites.net/medalsHub";
@@ -47,23 +56,30 @@ function App() {
   useEffect(() => {
     // initial data loaded here
     async function fetchCountries() {
-      const { data: fetchedCountries } = await axios.get(apiEndpoint);
-      // we need to save the original medal count values in state
-      let newCountries = [];
-      fetchedCountries.forEach((country) => {
-        let newCountry = {
-          id: country.id,
-          name: country.name,
-        };
-        medals.current.forEach((medal) => {
-          const count = country[medal.name];
-          // page_value is what is displayed on the web page
-          // saved_value is what is saved to the database
-          newCountry[medal.name] = { page_value: count, saved_value: count };
+      try {
+        const { data: fetchedCountries } = await axios.get(apiEndpoint);
+        // we need to save the original medal count values in state
+        let newCountries = [];
+        fetchedCountries.forEach((country) => {
+          let newCountry = {
+            id: country.id,
+            name: country.name,
+          };
+          medals.current.forEach((medal) => {
+            const count = country[medal.name];
+            // page_value is what is displayed on the web page
+            // saved_value is what is saved to the database
+            newCountry[medal.name] = { page_value: count, saved_value: count };
+          });
+          newCountries.push(newCountry);
         });
-        newCountries.push(newCountry);
-      });
-      setCountries(newCountries);
+        setCountries(newCountries);
+      } catch {
+        setNotification({
+          message: "Unable to load countries. Please try again.",
+          color: "red",
+        });
+      }
     }
     fetchCountries();
 
@@ -85,11 +101,7 @@ function App() {
       connection
         .start()
         .then(() => {
-          console.log("Connected!");
-
           connection.on("ReceiveAddMessage", (country) => {
-            console.log(`Add: ${country.name}`);
-
             let newCountry = {
               id: country.id,
               name: country.name,
@@ -109,16 +121,12 @@ function App() {
           });
 
           connection.on("ReceiveDeleteMessage", (id) => {
-            console.log(`Delete id: ${id}`);
-
             let mutableCountries = [...latestCountries.current];
             mutableCountries = mutableCountries.filter((c) => c.id !== id);
             setCountries(mutableCountries);
           });
 
           connection.on("ReceivePatchMessage", (country) => {
-            console.log(`Patch: ${country.name}`);
-
             let updatedCountry = {
               id: country.id,
               name: country.name,
@@ -137,7 +145,12 @@ function App() {
             setCountries(mutableCountries);
           });
         })
-        .catch((e) => console.log("Connection failed: ", e));
+        .catch(() =>
+          setNotification({
+            message: "Live updates are unavailable. Please refresh to reconnect.",
+            color: "red",
+          })
+        );
     }
     // useEffect is dependent on changes to connection
   }, [connection]);
@@ -163,14 +176,17 @@ function App() {
         ex.response &&
         (ex.response.status === 401 || ex.response.status === 403)
       ) {
-        alert("You are not authorized to complete this request");
-      } else if (ex.response) {
-        console.log(ex.response);
+        setNotification({
+          message: "You are not authorized to complete this request.",
+          color: "red",
+        });
       } else {
-        console.log("Request failed");
+        setNotification({
+          message: "Unable to add country. Please try again.",
+          color: "red",
+        });
       }
     }
-    console.log("ADD");
   }
   async function handleDelete(countryId) {
     const originalCountries = countries;
@@ -184,20 +200,25 @@ function App() {
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
         // country already deleted
-        console.log(
-          "The record does not exist - it may have already been deleted"
-        );
+        setNotification({
+          message: "This country was already deleted.",
+          color: "blue",
+        });
       } else {
         setCountries(originalCountries);
         if (
           ex.response &&
           (ex.response.status === 401 || ex.response.status === 403)
         ) {
-          alert("You are not authorized to complete this request");
-        } else if (ex.response) {
-          console.log(ex.response);
+          setNotification({
+            message: "You are not authorized to complete this request.",
+            color: "red",
+          });
         } else {
-          console.log("Request failed");
+          setNotification({
+            message: "Unable to delete country. Please try again.",
+            color: "red",
+          });
         }
       }
     }
@@ -231,9 +252,6 @@ function App() {
         country[medal.name].saved_value = country[medal.name].page_value;
       }
     });
-    console.log(
-      `json patch for id: ${countryId}: ${JSON.stringify(jsonPatch)}`
-    );
     // update state
     setCountries(mutableCountries);
 
@@ -246,18 +264,25 @@ function App() {
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
         // country already deleted
-        console.log(
-          "The record does not exist - it may have already been deleted"
-        );
+        setNotification({
+          message: "This country was already deleted.",
+          color: "blue",
+        });
       } else if (
         ex.response &&
         (ex.response.status === 401 || ex.response.status === 403)
       ) {
-        alert("You are not authorized to complete this request");
+        setNotification({
+          message: "You are not authorized to complete this request.",
+          color: "red",
+        });
         // to simplify, I am reloading the page to restore "saved" values
-        window.location.reload(false);
+        setTimeout(() => window.location.reload(false), 1200);
       } else {
-        alert("An error occurred while updating");
+        setNotification({
+          message: "An error occurred while updating. Please try again.",
+          color: "red",
+        });
         setCountries(originalCountries);
       }
     }
@@ -279,18 +304,25 @@ function App() {
         password: password,
       });
       const encoded = resp.data.token;
+      const authenticatedUser = getUser(encoded);
       localStorage.setItem("token", encoded);
-      setUser(getUser(encoded));
+      setUser(authenticatedUser);
     } catch (ex) {
-      if (
-        ex.response &&
-        (ex.response.status === 401 || ex.response.status === 400)
-      ) {
-        alert("Login failed");
-      } else if (ex.response) {
-        console.log(ex.response);
+      if (ex.response) {
+        setNotification({
+          message: `Login rejected by the server (HTTP ${ex.response.status}). Check the username and password.`,
+          color: "red",
+        });
+      } else if (ex.request) {
+        setNotification({
+          message: "Could not reach the login service. Check the connection and try again.",
+          color: "red",
+        });
       } else {
-        console.log("Request failed");
+        setNotification({
+          message: "The login response did not contain a valid token.",
+          color: "red",
+        });
       }
     }
   }
@@ -315,13 +347,40 @@ function App() {
 
   return (
     <Theme appearance={appearance}>
-      <Button
-        onClick={toggleAppearance}
-        style={{ position: "fixed", bottom: 20, right: 20, zIndex: 100 }}
-        variant="ghost"
-      >
-        {appearance === "dark" ? <MoonIcon /> : <SunIcon />}
-      </Button>
+      {notification && (
+        <Callout.Root
+          className="app-notification"
+          color={notification.color}
+          role="alert"
+        >
+          <Callout.Icon>
+            <ExclamationTriangleIcon />
+          </Callout.Icon>
+          <Callout.Text className="app-notification-text">
+            {notification.message}
+          </Callout.Text>
+          <Tooltip content="Dismiss message">
+            <IconButton
+              variant="ghost"
+              color={notification.color}
+              aria-label="Dismiss message"
+              onClick={() => setNotification(null)}
+            >
+              <Cross2Icon />
+            </IconButton>
+          </Tooltip>
+        </Callout.Root>
+      )}
+      <Tooltip content={`Switch to ${appearance === "dark" ? "light" : "dark"} theme`}>
+        <Button
+          onClick={toggleAppearance}
+          aria-label={`Switch to ${appearance === "dark" ? "light" : "dark"} theme`}
+          style={{ position: "fixed", bottom: 20, right: 20, zIndex: 100 }}
+          variant="ghost"
+        >
+          {appearance === "dark" ? <MoonIcon /> : <SunIcon />}
+        </Button>
+      </Tooltip>
       {user.authenticated ? (
         <Logout onLogout={handleLogout} />
       ) : (

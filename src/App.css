@@ -18,3 +18,18 @@
   background-color: inherit;
   z-index: 10;
 }
+.app-notification {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(450px, calc(100vw - 32px));
+  box-sizing: border-box;
+  transform: translateX(-50%);
+}
+.app-notification-text {
+  flex: 1;
+}

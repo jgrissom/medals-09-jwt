@@ -9,11 +9,26 @@ export const tc = (str) =>
 export function getUser(encoded) {
   // return unencoded user / permissions
   const decoded = jwtDecode(encoded);
+  const roleClaims =
+    decoded.roles ??
+    decoded.role ??
+    decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  const roles = Array.isArray(roleClaims)
+    ? roleClaims
+    : roleClaims
+      ? [roleClaims]
+      : [];
+
   return {
-    name: decoded["username"],
+    name:
+      decoded.username ??
+      decoded.unique_name ??
+      decoded.name ??
+      decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ??
+      null,
     authenticated: true,
-    canPost: decoded["roles"].indexOf("medals-post") === -1 ? false : true,
-    canPatch: decoded["roles"].indexOf("medals-patch") === -1 ? false : true,
-    canDelete: decoded["roles"].indexOf("medals-delete") === -1 ? false : true,
+    canPost: roles.includes("medals-post"),
+    canPatch: roles.includes("medals-patch"),
+    canDelete: roles.includes("medals-delete"),
   };
 }
